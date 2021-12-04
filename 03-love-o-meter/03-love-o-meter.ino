@@ -1,5 +1,5 @@
 const int sensorPin = A0;
-const float environmentTemperature = 24.0; // temperature of the environemnt - you should adjust it 
+float environmentTemperature = 24.0; // temperature of the environemnt - you should adjust it 
 const float analogPinNumberOfValues = 1024.0;
 const float maxAnalogPinVoltage = 5.0;
 
@@ -13,20 +13,11 @@ void lightUp(int number_of_leds = 0) {
       digitalWrite(pinNumber, LOW);
     }
   }
-}
-
-void setup() {
-  Serial.begin(9600); // Opens serial port with 9600 bit/s
-
-  for (int pinNumber = 2; pinNumber < 5; ++pinNumber) {
-    pinMode(pinNumber, OUTPUT);
-    digitalWrite(pinNumber, LOW);
-  }
 
 }
 
-void loop() {
-  int sensorVal = analogRead(sensorPin);
+float readTemperature() {
+    int sensorVal = analogRead(sensorPin);
   Serial.print("Sensor value: ");
   Serial.print(sensorVal);
 
@@ -38,6 +29,23 @@ void loop() {
   float temperature = (voltage - 0.5) * 100;
   Serial.print(", Temperature: ");
   Serial.println(temperature);
+  return temperature;
+}
+
+void setup() {
+  Serial.begin(9600); // Opens serial port with 9600 bit/s
+
+  for (int pinNumber = 2; pinNumber < 5; ++pinNumber) {
+    pinMode(pinNumber, OUTPUT);
+    digitalWrite(pinNumber, LOW);
+  }
+  delay(50);
+  environmentTemperature = readTemperature();
+}
+
+void loop() {
+  float temperature = readTemperature();
+
 
   if (temperature < environmentTemperature + 2) {
     lightUp(0);
